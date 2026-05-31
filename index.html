@@ -74,11 +74,18 @@
       <button class="convert" onclick="convert()">تحويل الكونفج</button>
 
       <label style="margin-top: 10px; display: block"
-        >الكونفج بعد التحويل:</label
+        >استايل للكمبيوتر (Computer Style):</label
       >
       <textarea id="output" readonly></textarea>
 
-      <button class="copy" onclick="copyResult()">📋 نسخ إلى Clipboard</button>
+      <button class="copy" onclick="copyResult('output')">📋 نسخ إلى Clipboard (كمبيوتر)</button>
+
+      <label style="margin-top: 10px; display: block"
+        >استايل للهاتف (Phone Style):</label
+      >
+      <textarea id="output_phone" readonly></textarea>
+
+      <button class="copy" onclick="copyResult('output_phone')">📋 نسخ إلى Clipboard (هاتف)</button>
 
     </div>
 
@@ -95,7 +102,7 @@
         const [uuidPart, rest] = clean.split("@");
         const [hostPort] = rest.split("?");
 
-        const referenceParams = [
+        const referenceParamsComputer = [
           "type=ws",
           "security=tls",
           "fp=chrome",
@@ -106,14 +113,31 @@
           "encryption=none",
         ].join("&");
 
-        const result = `vless://${uuidPart}@${hostPort}?${referenceParams}${
+        const referenceParamsPhone = [
+          "security=tls",
+          "alpn=http%2F1.1",
+          "encryption=none",
+          "insecure=1",
+          "headerType=none",
+          "fp=ios",
+          "type=tcp",
+          "allowInsecure=1",
+          "sni=scu.eg",
+        ].join("&");
+
+        const resultComputer = `vless://${uuidPart}@${hostPort}?${referenceParamsComputer}${
           tag ? "#" + tag : ""
         }`;
-        document.getElementById("output").value = result;
+        const resultPhone = `vless://${uuidPart}@${hostPort}?${referenceParamsPhone}${
+          tag ? "#" + tag : ""
+        }`;
+        
+        document.getElementById("output").value = resultComputer;
+        document.getElementById("output_phone").value = resultPhone;
       }
 
-      function copyResult() {
-        const output = document.getElementById("output");
+      function copyResult(elementId) {
+        const output = document.getElementById(elementId);
         output.select();
         document.execCommand("copy");
       }
